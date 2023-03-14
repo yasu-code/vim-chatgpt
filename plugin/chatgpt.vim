@@ -1,2 +1,2 @@
 command -nargs=* ChatGPT call chatgpt#send(<q-args>)
-command -nargs=0 CodeReviewPlease call chatgpt#code_review_please()
+command -nargs=* Review call chatgpt#review(<f-args>)
