@@ -68,7 +68,7 @@ function! chatgpt#send(text) abort
 endfunction
 
 function! chatgpt#review() abort
-  let l:code = @*
+  let l:code = GetVisualSelection()
   let l:lang = get(g:, 'chatgpt_lang', $LANG)
   let l:question = l:lang =~# '^ja' ? 'このプログラムに対してレビューとリファクタリングして下さい。' : 'please code review and refactor source code'
   let l:lines = [
@@ -77,4 +77,16 @@ function! chatgpt#review() abort
   \  l:code
   \]
   call chatgpt#send(join(l:lines, "\n"))
+endfunction
+
+function! GetVisualSelection() abort
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    if lnum1 == 0 && lnum2 == 0 && col1 == 0 && col2 == 0
+        return ''
+    endif
+    let lines[-1] = lines[-1][:col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    return join(lines, "\n")
 endfunction
