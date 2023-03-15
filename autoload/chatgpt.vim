@@ -67,17 +67,14 @@ function! chatgpt#send(text) abort
   endif
 endfunction
 
-function! chatgpt#review(...) abort
-  if a:0 >= 2
-    let l:code = getline(a:1, a:2)
-  else
-    let l:code = getline(1, '$')
-  endif
+function! chatgpt#review() abort
+  let l:code = @*
   let l:lang = get(g:, 'chatgpt_lang', $LANG)
   let l:question = l:lang =~# '^ja' ? 'このプログラムに対してレビューとリファクタリングして下さい。' : 'please code review and refactor source code'
   let l:lines = [
   \  l:question,
   \  '',
-  \] + l:code
+  \  l:code
+  \]
   call chatgpt#send(join(l:lines, "\n"))
 endfunction
